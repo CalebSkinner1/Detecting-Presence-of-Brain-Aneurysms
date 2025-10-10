@@ -15,3 +15,5 @@ for(i in 1:iter){
   
   theta <- theta - solve(H)%*%grad # take step towards theta
 }
+
+theta
