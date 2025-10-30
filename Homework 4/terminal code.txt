@@ -8,10 +8,10 @@ conda activate updated_jupyter
 conda install -y numpy=1.19.5 scipy matplotlib cython ipython ipykernel notebook jupyter
 
 # 4️⃣ Install other compatible packages via conda
-conda install -y attrs backcall bleach certifi chardet colorama cycler decorator defusedxml entrypoints future idna imageio jedi jinja2 jsonschema kiwisolver markupsafe mistune nbconvert nbdime nbformat pandocfilters parso pexpect pickleshare pillow prompt-toolkit ptyprocess pygments pyparsing pyrsistent python-dateutil pyzmq requests Send2Trash six terminado testpath tornado traitlets urllib3 wcwidth webencodings ipywidgets
+conda install -y attrs backcall bleach certifi chardet colorama cycler decorator defusedxml entrypoints future idna imageio jedi jinja2 jsonschema kiwisolver markupsafe mistune nbconvert nbdime nbformat pandocfilters parso pexpect pickleshare pillow prompt-toolkit ptyprocess pygments pyparsing pyrsistent python-dateutil pyzmq requests Send2Trash six terminado testpath tornado traitlets urllib3 wcwidth webencodings ipywidgets h5py
 
 # 5️⃣ Install older / pip-only packages
-pip install gitdb2 smmap2 jupyterlab==0.35.4 jupyterlab-server==0.2.0 widgetsnbextension qtconsole jupyter-console prometheus-client
+pip install gitdb2 smmap2 jupyterlab==0.35.4 jupyterlab-server==0.2.0 widgetsnbextension qtconsole jupyter-console prometheus-client torch torchvision torchaudio
 
 # 6️⃣ Register the environment as a Jupyter kernel
 python -m ipykernel install --user --name=updated_jupyter --display-name "Python (updated_jupyter)"
