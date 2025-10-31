@@ -248,7 +248,15 @@ class VisionTransformer(nn.Module):
         #    You may find torch.mean useful.                                      #
         # 5. Feed it through a linear layer to produce class logits.              #
         ############################################################################
-
+        patches = self.patch_embed(x) # embed input image
+        patches = self.positional_encoding(patches) # add positional encoding
+        
+        encoded = self.transformer(patches) # pass through transofmrer encoder
+        
+        feature_vector = torch.mean(encoded, dim =1) # average pool patch vectors
+        
+        logits = self.head(feature_vector)
+               
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################

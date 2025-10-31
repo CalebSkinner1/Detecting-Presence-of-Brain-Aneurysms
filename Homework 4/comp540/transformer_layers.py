@@ -286,7 +286,7 @@ class TransformerDecoderLayer(nn.Module):
         # memory, and (2) the feedforward block. Each block should follow the      #
         # same structure as self-attention implemented just above.                 #
         ############################################################################
-	# Cross-attention: Q=tgt, K and V=memory
+        # Cross-attention: Q=tgt, K and V=memory
         shortcut = tgt
         tgt = self.cross_attn(query=tgt, key=memory, value=memory, attn_mask= None)
         tgt = self.dropout_cross(tgt)
@@ -357,6 +357,15 @@ class PatchEmbedding(nn.Module):
         # step. Once the patches are flattened, embed them into latent vectors     #
         # using the projection layer.                                              #
         ############################################################################
+        
+        # (C x patch_size x patch_size)         
+        patches = x.unfold(2, self.patch_size, self.patch_size) # unfold height
+        patches = patches.unfold(3, self.patch_size, self.patch_size) # unfold width
+        # (N x num_patches x patch_dim)
+        patches = patches.permute(0, 2, 3, 1, 4, 5).reshape(N, -1, self.in_channels*self.patch_size**2)
+        
+        # projection
+        out = self.proj(patches)
 
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -405,7 +414,19 @@ class TransformerEncoderLayer(nn.Module):
         # TODO: Implement the encoder layer by applying self-attention followed    #
         # by a feedforward block. This code will be very similar to decoder layer. #
         ############################################################################
-
+        # Self-attention: Q=src, K and V=memory
+        shortcut = src # save
+        src = self.self_attn(query = src, key = src, value = src, attn_mask = src_mask)
+        src = self.dropout_self(src) # dropout layer
+        src = src + shortcut # residual connection
+        src = self.norm_self(src) # layer norm
+        
+        # Feed-forward block
+        shortcut = src # save
+        src = self.ffn(src) # feed forward layer
+        src = self.dropout_ffn(src) # dropout layer
+        src = src + shortcut # residual connection
+        src = self.norm_ffn(src) # layer norm
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
