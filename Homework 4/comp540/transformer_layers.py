@@ -288,7 +288,7 @@ class TransformerDecoderLayer(nn.Module):
         ############################################################################
 	# Cross-attention: Q=tgt, K and V=memory
         shortcut = tgt
-        tgt = self.cross_attn(query=tgt, key=memory, value=memory, attn_mask=tgt_mask)
+        tgt = self.cross_attn(query=tgt, key=memory, value=memory, attn_mask= None)
         tgt = self.dropout_cross(tgt)
         tgt = tgt + shortcut
         tgt = self.norm_cross(tgt)
