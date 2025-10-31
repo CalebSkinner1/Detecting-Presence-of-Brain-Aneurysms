@@ -280,14 +280,25 @@ class TransformerDecoderLayer(nn.Module):
         tgt = self.dropout_self(tgt)
         tgt = tgt + shortcut
         tgt = self.norm_self(tgt)
-
         ############################################################################
         # TODO: Complete the decoder layer by implementing the remaining two       #
         # sublayers: (1) the cross-attention block using the encoder output as     #
         # memory, and (2) the feedforward block. Each block should follow the      #
         # same structure as self-attention implemented just above.                 #
         ############################################################################
+	# Cross-attention: Q=tgt, K and V=memory
+        shortcut = tgt
+        tgt = self.cross_attn(query=tgt, key=memory, value=memory, attn_mask=None)
+        tgt = self.dropout_cross(tgt)
+        tgt = tgt + shortcut
+        tgt = self.norm_cross(tgt)
 
+        # Feed-forward
+        shortcut = tgt
+        tgt = self.ffn(tgt) 
+        tgt = self.dropout_ffn(tgt)
+        tgt = tgt + shortcut
+        tgt = self.norm_ffn(tgt)
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
