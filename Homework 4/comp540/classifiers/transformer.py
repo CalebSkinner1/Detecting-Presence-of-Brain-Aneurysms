@@ -88,11 +88,19 @@ class CaptioningTransformer(nn.Module):
         #  3) Finally, apply the decoder features on the text & image embeddings   #
         #     along with the tgt_mask. Project the output to scores per token      #
         ############################################################################
+        tgt = self.embedding(captions)                 
+        tgt = self.positional_encoding(tgt)            
 
+        memory = self.visual_projection(features) # (N, W)
+        memory = memory.unsqueeze(1) # (N, 1, W)
+
+        tgt_mask = torch.tril(torch.ones(T, T, device=captions.device))
+
+        dec_out = self.transformer(tgt=tgt, memory=memory, tgt_mask=tgt_mask)  
+        scores = self.output(dec_out)                                          
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
-
         return scores
 
     def sample(self, features, max_length=30):
