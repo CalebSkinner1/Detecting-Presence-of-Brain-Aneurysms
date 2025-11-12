@@ -28,7 +28,7 @@ def compute_train_transform(seed=123456):
         # Step 2: Horizontally flip the image with probability 0.5; use RandomHorizontalFlip()
         transforms.RandomHorizontalFlip(p = 0.5),
         # Step 3: With a probability of 0.8, apply color jitter RandomApply() (you can use "color_jitter" defined above.)
-        transforms.RandomApply(color_jitter(), p = 0.5),
+        transforms.RandomApply(color_jitter, p = 0.5),
         # Step 4: With a probability of 0.2, convert the image to grayscale; use RandomGrayScale()
         transforms.RandomGrayScale(p = 0.2),
         ##############################################################################
