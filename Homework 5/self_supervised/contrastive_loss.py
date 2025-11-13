@@ -105,9 +105,9 @@ def sim_positive_pairs(out_left, out_right):
     ##############################################################################
     
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-    
-
+    num = (out_left * out_right).sum(dim=1, keepdim=True)
+    den = (torch.linalg.norm(out_left,  dim=1, keepdim=True)) * (torch.linalg.norm(out_right, dim=1, keepdim=True))
+    pos_pairs = num / den
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
     ##############################################################################
@@ -133,9 +133,8 @@ def compute_sim_matrix(out):
     ##############################################################################
     
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-   
-
+    z = out / out.norm(dim=1, keepdim=True)
+    sim_matrix = z @ z.T
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
     ##############################################################################
@@ -179,17 +178,14 @@ def simclr_loss_vectorized(out_left, out_right, tau, device='cuda'):
     # Option 1: Extract the corresponding indices from sim_matrix. 
     # Option 2: Use sim_positive_pairs().
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-    
-
+    sim_pos_N = sim_positive_pairs(out_left, out_right).squeeze(1) # (N,)
+    sim_pos = sim_pos_N.repeat(2) #(2N,)
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
     # Step 3: Compute the numerator value for all augmented samples.
     numerator = None
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-    
-
+    numerator = (sim_pos / tau).exp()
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
     # Step 4: Now that you have the numerator and denominator for all augmented samples, compute the total loss.
