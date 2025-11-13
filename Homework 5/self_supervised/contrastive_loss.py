@@ -65,7 +65,7 @@ def simclr_loss_naive(out_left, out_right, tau):
         sum_sim_kN = 0
         for j in range(2*N):
             if j !=(k+ N):
-                sum_sim_kN += torch.exp(sim(z_k, out[j])/tau)
+                sum_sim_kN += torch.exp(sim(z_k_N, out[j])/tau)
         
         sim__kN_k = torch.exp(sim(z_k_N, z_k)/tau)
         l_kN_k = -torch.log(sim__kN_k/(sum_sim_kN))
