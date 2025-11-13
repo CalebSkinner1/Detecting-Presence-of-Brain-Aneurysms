@@ -54,14 +54,21 @@ def simclr_loss_naive(out_left, out_right, tau):
         # Hint: Compute l(k, k+N) and l(k+N, k). (about 5 lines expected)            #
         ##############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        sum_sim = 0
+        sum_sim_k = 0
         for j in range(2*N):
-            sum_sim += exp(sim(z_k, out[j])/tau)
+            if j !=k:
+                sum_sim_k += torch.exp(sim(z_k, out[j])/tau)
         
-        sim_k_kN = exp(sim(z_k, z_k_N))/tau
-        sim__kN_k = exp(sim(z_k_N, z_k))/tau
-        l_k_kN = -torch.log(sim_k_kN/(sum_sim - sim_k_kN))
-        l_kN_k = -torch.log(sim__kN_k/(sum_sim - sim__kN_k))
+        sim_k_kN = torch.exp(sim(z_k, z_k_N)/tau)
+        l_k_kN = -torch.log(sim_k_kN/(sum_sim_k))
+
+        sum_sim_kN = 0
+        for j in range(2*N):
+            if j !=(k+ N):
+                sum_sim_kN += torch.exp(sim(z_k, out[j])/tau)
+        
+        sim__kN_k = torch.exp(sim(z_k_N, z_k)/tau)
+        l_kN_k = -torch.log(sim__kN_k/(sum_sim_kN))
         
         total_loss += l_k_kN + l_kN_k
 
