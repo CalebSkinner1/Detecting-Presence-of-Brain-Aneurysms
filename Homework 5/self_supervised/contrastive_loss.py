@@ -179,7 +179,7 @@ def simclr_loss_vectorized(out_left, out_right, tau, device='cuda'):
     # Option 2: Use sim_positive_pairs().
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     sim_pos_N = sim_positive_pairs(out_left, out_right).squeeze(1) # (N,)
-    sim_pos = sim_pos_N.repeat(2) #(2N,)
+    sim_pos = sim_pos_N.repeat(2).to(device) #(2N,)
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
     # Step 3: Compute the numerator value for all augmented samples.
