@@ -11,9 +11,10 @@ def find_closest_centroids(X, centroids):
 
     # Set K
     K = centroids.shape[0]
+    m = X.shape[0]
 
     # You need to return the following variable correctly.
-    idx = np.zeros((X.shape[0],),dtype=int)
+    idx = np.zeros((m,),dtype=int)
 
     ######################### YOUR CODE HERE ########################################
     # Instructions: Go over every example, find its closest centroid, and store     #
@@ -25,8 +26,8 @@ def find_closest_centroids(X, centroids):
     for i, obs in enumerate(X):
         dist = np.zeros(K)
         for k, c in enumerate(centroids):
-            dist[k] = np.linalg.norm(obs - c, 2) # compute l2 distance between observation and centroid
-        idx[i] = np.argmin(dist) # assigned X[i,] the centroid with the min such distance
+            dist[k] = np.linalg.norm(obs - c) # compute l2 distance between observation and centroid
+        idx[i] = dist.argmin() # assigned X[i,] the centroid with the min such distance
 
     ################################################################################
     #             END OF YOUR CODE                                                 #
