@@ -74,8 +74,10 @@ def kmeans_init_centroids(X,K):
     #######################= YOUR CODE HERE ######################################
     #  Construct a random permutation of the examples and pick the first K items  #                                              
     ###############################################################################
-    
-    
+    m = X.shape[0]
+    indices = np.random.permutation(m)[:K] # select first K items of random permutation
+    centroids = X[indices, :]
+
     
     ################################################################################
     #             END OF YOUR CODE                                                 #
