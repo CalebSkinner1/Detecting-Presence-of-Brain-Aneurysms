@@ -55,8 +55,8 @@ def compute_centroids(X, idx, K):
     #               should contain the mean of the data points assigned to        #
     #               centroid i.                                                   #
     ###############################################################################
-
-   
+    for j in range(K):
+        centroids[j] = X[idx == j].mean(axis = 0)
 
     ################################################################################
     #             END OF YOUR CODE                                                 #
