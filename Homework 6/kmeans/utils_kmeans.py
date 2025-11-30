@@ -22,10 +22,11 @@ def find_closest_centroids(X, centroids):
     #               closest to example i. Hence, it should be a value in the        #
     #               range 0..K-1                                                    #
     ################################################################################
-
-    
-    
-
+    dist = np.zeros(K)
+    for i, obs in enumerate(X):
+        for k, c in enumerate(centroids):
+            dist[k] = np.linalg.norm(obs, c) # compute l2 distance between observation and centroid
+        idx[i] = np.where(dist == np.min(dist)) # assigned X[i,] the centroid with the min such distance
 
     ################################################################################
     #             END OF YOUR CODE                                                 #
