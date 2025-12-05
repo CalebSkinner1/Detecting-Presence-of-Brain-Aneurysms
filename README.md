@@ -16,7 +16,7 @@ For each subject, the preprocessing step:
 - resizes slices to a uniform grid,
 - writes the preprocessed slices to an HDF5 shard.
 
-To cover the full dataset, run preprocessing.ipynb four times, each time with a different shard index (for example, 0, 1, 2, and 3).  
+To cover the full dataset, run preprocessing.ipynb four times (creating four shards), each time with a different shard index (for example, 0, 1, 2, and 3).  
 Mini-volumes (32 slices) are **not** created in this step; they are created later in the one-step.ipynb or two-step.ipynb .
 
 ### How to Run
