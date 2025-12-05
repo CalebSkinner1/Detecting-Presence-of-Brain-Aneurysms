@@ -18,8 +18,6 @@ For each subject, the preprocessing step:
 
 To cover the full dataset, run `preprocessing.ipynb` four times (creating four shards), each time with a different shard index (0, 1, 2, and 3). The notebook uses modulo-based sharding (`i % K == shard_id`), so these four indices ensure every subject is assigned to exactly one shard with no overlap. Mini-volumes (32 slices) are **not** created in this step; they are created later in `one-step.ipynb` or `two-step.ipynb`.
 
-As
-
 ### How to Run
 1. Run preprocessing.ipynb four times, each time with a different shard index, to create the HDF5 shards.
 2. Choose a training pipeline:
