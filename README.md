@@ -3,7 +3,7 @@
 We develop a pipeline for detecting the presence and arterial location of brain aneurysms from three-dimensional brain scans. This repository contains three files. The first file, preprocessing.ipynb, preprocesses the brain scans and prepares them for analysis. The second, one-step.ipynb, employs a 3D Convolutional Neural Network (CNN) to detect the presence and location in a united approach. The third, two-step.ipynb, implements 2 3D CNNs. The first 3D CNN detects the presence of an aneurysm and the second 3D CNN focuses on its location. In the steps below, we detail the procedure for implementing this method.
 
 ## Download the Data from Kaggle
-The brain scan data is too large to store on GitHub, so you must download the [data](https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/data) from the Kaggle Competition.
+The brain scan data is too large to store on GitHub, so you must download the data from the [Kaggle Competition](https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/data).
 
 ## Pre-Process the Data
 Both the one-step and two-step models use the same preprocessing; they differ in how detection and localization are learned (coupled vs. decoupled).  
@@ -16,7 +16,7 @@ For each subject, the preprocessing step:
 - resizes slices to a uniform grid,
 - writes the preprocessed slices to an HDF5 shard.
 
-To cover the full dataset, run preprocessing.ipynb **four** times (creating four shards), each time with a different `shard_id` (0, 1, 2, and 3). You change `shard_id` in the **sixth code block** in preprocessing.ipynb. The notebook uses modulo-based sharding (`i % K == shard_id`), so these four indices ensure every subject is assigned to exactly one shard with no overlap. Mini-volumes (32 slices) are not created in this step; they are created later in one-step.ipynb or two-step.ipynb.
+To process the full dataset, run preprocessing.ipynb **four** times (creating four shards), each time with a different `shard_id` (0, 1, 2, and 3). You change `shard_id` in the **sixth code block** in preprocessing.ipynb. The notebook uses modulo-based sharding (`i % K == shard_id`), so these four indices ensure every subject is assigned to exactly one shard with no overlap. Mini-volumes (32 slices) are not created in this step; they are created later in one-step.ipynb or two-step.ipynb.
 
 ### How to Run
 1. Run preprocessing.ipynb **four** times, each time with a different shard index, to create the HDF5 shards.
