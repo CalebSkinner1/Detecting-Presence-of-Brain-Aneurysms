@@ -6,7 +6,26 @@ We develop a pipeline for detecting the presence and arterial location of brain 
 The brain scan data is too large to store on GitHub, so you must download the [data](https://www.kaggle.com/competitions/rsna-intracranial-aneurysm-detection/data) from the Kaggle Competition.
 
 ## Pre-Process the Data
-**veronica will add to this**
+Both the one-step and two-step models use the same preprocessing; they differ in how detection and localization are learned (coupled vs. decoupled).  
+All data is stored in HDF5 shard files for memory-efficient training.
+
+For each subject, the preprocessing step:
+- loads all slices in the scan,
+- orders slices using DICOM geometry,
+- applies intensity normalization and windowing,
+- resizes slices to a uniform grid,
+- writes the preprocessed slices to an HDF5 shard.
+
+To cover the full dataset, run preprocessing.ipynb four times, each time with a different shard index (for example, 0, 1, 2, and 3).  
+Mini-volumes (32 slices) are **not** created in this step; they are created later in the one-step.ipynb or two-step.ipynb .
+
+### How to Run
+1. Run preprocessing.ipynb four times, each time with a different shard index, to create the HDF5 shards.
+2. Choose a training pipeline:
+   - one_step.ipynb for the coupled model, or
+   - two_step.ipynb for the decoupled model.
+3. Point the chosen training notebook to the directory containing the shards.
+4. Run the notebook to train the model; mini-volume construction and label assignment are handled internally.
 
 ## One Step Model
 Once you have downloaded the pre-processed data using preprocessing.ipynb, be sure to adjust the file path to the shards in one-step.ipynb (code chunk 4). From here, the file will divide the pre-processed brains scans into mini-volumes and train, validation, and test sets. We use a 70-10-20 split. The dataloaders will load the brain scans while adhering to memory constraints. Then, we initiliaze a 3D CNN with three convolutional blocks and three feedforward layers. The model is trained on the training data for 5 epochs using a weighted cross entropy loss. We print the training and validation loss curves and save the model at the epoch with the lowest validation loss. Next, the trained model is applied to the test set and the weighted ROC AUC is printed for evaluation. Often, the model is applied to multiple minivolumes corresponding to the same subject. In these cases, we apply a simple decision rule to aggregate the predictions to yield a single output for each test subject. In this model, we achieve a weighted ROC AUC of 0.6249. The model provides helpful inference into the presence of an aneurysm, but is unable to identify the location of the aneurysm.
