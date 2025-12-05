@@ -23,7 +23,7 @@ To cover the full dataset, run preprocessing.ipynb four times (creating four sha
 2. Choose a training pipeline:
    - one_step.ipynb for the coupled model, or
    - two_step.ipynb for the decoupled model.
-3. Point the chosen training notebook to the directory containing the shards.
+3. In the chosen training notebook, update the HDF5 paths so they match the shard filenames and locations you used in preprocessing.ipynb.  
 4. Run the notebook to train the model; mini-volume construction and label assignment are handled internally.
 
 ## One Step Model
