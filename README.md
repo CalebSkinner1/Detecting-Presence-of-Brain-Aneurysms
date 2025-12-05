@@ -1,4 +1,4 @@
-## Detecting Presence of Brain Aneurysms - A Deep Learning Approach
+# Detecting Presence of Brain Aneurysms - A Deep Learning Approach
 
 We develop a pipeline for detecting the presence and arterial location of brain aneurysms from three-dimensional brain scans. This repository contains three files. The first file, preprocessing.ipynb, preprocesses the brain scans and prepares them for analysis. The second, one-step.ipynb, employs a 3D Convolutional Neural Network (CNN) to detect the presence and location in a united approach. The third, two-step.ipynb, implements 2 3D CNNs. The first 3D CNN detects the presence of an aneurysm and the second 3D CNN focuses on its location. In the steps below, we detail the procedure for implementing this method.
 
@@ -16,29 +16,23 @@ For each subject, the preprocessing step:
 - resizes slices to a uniform grid,
 - writes the preprocessed slices to an HDF5 shard.
 
-To process the full dataset, run preprocessing.ipynb **four** times (creating four shards), each time with a different `shard_id` (0, 1, 2, and 3). You change `shard_id` in the **sixth code block** in preprocessing.ipynb. The notebook uses modulo-based sharding (`i % K == shard_id`), so these four indices ensure every subject is assigned to exactly one shard with no overlap. Mini-volumes (32 slices) are not created in this step; they are created later in one-step.ipynb or two-step.ipynb.
+To process the full dataset, run preprocessing.ipynb **four** times (creating four shards), each time with a different `shard_id` (0, 1, 2, and 3). Change `shard_id` in the **sixth code block** in preprocessing.ipynb. The notebook uses modulo-based sharding (`i % K == shard_id`), so these four indices ensure every subject is assigned to exactly one shard with no overlap. Mini-volumes (32 slices) are not created in this step; they are created later in one-step.ipynb or two-step.ipynb.
 
 ### How to Run
-1. Run preprocessing.ipynb **four** times, each time with a different shard index, to create the HDF5 shards.
-2. Choose a training pipeline:
+1. Change the ROOT directory in the **second cell block** to your preferred directory.
+2. Run preprocessing.ipynb **four** times, each time with a different shard index, to create the HDF5 shards.
+3. Choose a training pipeline:
    - one_step.ipynb for the coupled model, or
    - two_step.ipynb for the decoupled model.
-3. In the chosen training notebook, update the HDF5 paths so they match the shard filenames and locations you used in preprocessing.ipynb.  
-4. Run the notebook to train the model; mini-volume construction and label assignment are handled internally.
+4. In the chosen training notebook, update the HDF5 paths so they match the shard filenames and locations you used in preprocessing.ipynb.  
+5. Run the notebook to train the model; mini-volume construction and label assignment are handled internally.
 
 ## One Step Model
-Once you have downloaded the pre-processed data using preprocessing.ipynb, be sure to adjust the file path to the shards in one-step.ipynb (code chunk 4). From here, the file will divide the pre-processed brains scans into mini-volumes and train, validation, and test sets. We use a 70-10-20 split. The dataloaders will load the brain scans while adhering to memory constraints. Then, we initiliaze a 3D CNN with three convolutional blocks and three feedforward layers. The model is trained on the training data for 5 epochs using a weighted cross entropy loss. We print the training and validation loss curves and save the model at the epoch with the lowest validation loss. Next, the trained model is applied to the test set and the weighted ROC AUC is printed for evaluation. Often, the model is applied to multiple minivolumes corresponding to the same subject. In these cases, we apply a simple decision rule to aggregate the predictions to yield a single output for each test subject. In this model, we achieve a weighted ROC AUC of 0.6249. The model provides helpful inference into the presence of an aneurysm, but is unable to identify the location of the aneurysm.
+Once you have downloaded the pre-processed data using preprocessing.ipynb, be sure to adjust the file path to the shards in one-step.ipynb (code chunk 3). From here, the file will divide the pre-processed brains scans into mini-volumes and train, validation, and test sets. We use a 70-10-20 split. The dataloaders will load the brain scans while adhering to memory constraints. Then, we initiliaze a 3D CNN with three convolutional blocks and three feedforward layers. The model is trained on the training data for 5 epochs using a weighted cross entropy loss. We print the training and validation loss curves and save the model at the epoch with the lowest validation loss. Next, the trained model is applied to the test set and the weighted ROC AUC is printed for evaluation. Often, the model is applied to multiple minivolumes corresponding to the same subject. In these cases, we apply a simple decision rule to aggregate the predictions to yield a single output for each test subject. In this model, we achieve a weighted ROC AUC of 0.6249. The model provides helpful inference into the presence of an aneurysm, but is unable to identify the location of the aneurysm.
 
 ## Two Step Model
-The Two Step model is two-step.ipynb is similar. Again, be sure to adjust the file path to the shards (code chunk 4). Pre-processed brains scans are converted into mini-volumes and split into train, validation, and test sets with a 70-10-20 split. The two-step approach utilizes two 3D CNN; the major difference between them being the classification head. The first CNN identifies the presence of an aneurysm, while the second CNN predicts the arterial location of the aneurysm. The first model is trained on the entire training data for 6 epochs using a binary cross entropy loss, while the second model is trained on the subset containing aneurysms for 10 epochs. After training the first model, the weights for the second CNN are initialized using the first CNN, and the first five convolutional layers are frozen during training. We print the training and validation loss curves for both models and save the model at the epoch with the lowest validation loss. In the evaluation step, the data is applied to the first model. If an aneurysm is predicted, the data is then applied to the second model. In the two-step model, we achieve a weighted ROC AUC of 0.6224. Despite our best efforts, the model is still unable to meaninful predict the arterial location of the aneurysm.
+The Two Step model is two-step.ipynb is similar. Again, be sure to adjust the file path to the shards (code chunk 3). Pre-processed brains scans are converted into mini-volumes and split into train, validation, and test sets with a 70-10-20 split. The two-step approach utilizes two 3D CNN; the major difference between them being the classification head. The first CNN identifies the presence of an aneurysm, while the second CNN predicts the arterial location of the aneurysm. The first model is trained on the entire training data for 6 epochs using a binary cross entropy loss, while the second model is trained on the subset containing aneurysms for 10 epochs. After training the first model, the weights for the second CNN are initialized using the first CNN, and the first five convolutional layers are frozen during training. We print the training and validation loss curves for both models and save the model at the epoch with the lowest validation loss. In the evaluation step, the data is applied to the first model. If an aneurysm is predicted, the data is then applied to the second model. In the two-step model, we achieve a weighted ROC AUC of 0.6224. Despite our best efforts, the model is still unable to meaninful predict the arterial location of the aneurysm.
 
-## Note on Running the Notebooks
-These notebooks were developed in a Kaggle environment. To run them on Kaggle, you must **add the RSNA Intracranial Aneurysm Detection competition dataset as an input** to your notebook so it appears at the path `/kaggle/input/rsna-intracranial-aneurysm-detection`. 
-
-If you run the notebooks outside Kaggle, you must:  
-1. Manually download the RSNA dataset from Kaggle.  
-2. Update all data paths in the preprocessing and training notebooks.  
-3. Remove or replace Kaggle-only imports.
 
 ## Code References
 - https://medium.com/data-science/hdf5-datasets-for-pytorch-631ff1d750f5
