@@ -34,6 +34,6 @@ Once you have downloaded the pre-processed data using preprocessing.ipynb, be su
 The Two Step model is two-step.ipynb is similar. Again, be sure to adjust the file path to the shards (code chunk 4). Pre-processed brains scans are converted into mini-volumes and split into train, validation, and test sets with a 70-10-20 split. The two-step approach utilizes two 3D CNN; the major difference between them being the classification head. The first CNN identifies the presence of an aneurysm, while the second CNN predicts the arterial location of the aneurysm. The first model is trained on the entire training data for 6 epochs using a binary cross entropy loss, while the second model is trained on the subset containing aneurysms for 10 epochs. After training the first model, the weights for the second CNN are initialized using the first CNN, and the first five convolutional layers are frozen during training. We print the training and validation loss curves for both models and save the model at the epoch with the lowest validation loss. In the evaluation step, the data is applied to the first model. If an aneurysm is predicted, the data is then applied to the second model. In the two-step model, we achieve a weighted ROC AUC of 0.6224. Despite our best efforts, the model is still unable to meaninful predict the arterial location of the aneurysm.
 
 ## Code References
-https://medium.com/data-science/hdf5-datasets-for-pytorch-631ff1d750f5
-https://github.com/pytorch/pytorch/issues/11929
+- https://medium.com/data-science/hdf5-datasets-for-pytorch-631ff1d750f5
+- https://github.com/pytorch/pytorch/issues/11929
 
