@@ -7,7 +7,7 @@ The brain scan data is too large to store on GitHub, so you must download the [d
 
 ## Pre-Process the Data
 Both the one-step and two-step models use the same preprocessing; they differ in how detection and localization are learned (coupled vs. decoupled).  
-All pre-processed data is stored in HDF5 shard files for memory-efficient training.
+All preprocessed data is stored in HDF5 shard files for memory-efficient training.
 
 For each subject, the preprocessing step:
 - loads all slices in the scan,
